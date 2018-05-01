@@ -31,10 +31,10 @@ bintray {
     pkg {
         repo = 'domovoi'
         name = "${project.name}"
-        desc = ''
+        desc = 'Bring functional collection to java.'
         licenses = ['LGPL-3.0']
         vcsUrl = 'https://github.com/izumookuni/ej-collection.git'
-        labels = ['collection']
+        labels = ['collection', 'functional programming']
         githubRepo = "${github_user}/${project.name}"
         version {
             name = "${project.version}"
