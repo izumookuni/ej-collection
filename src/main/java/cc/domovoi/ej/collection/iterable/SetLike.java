@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public interface SetLike<A> extends IterableLike<A, SeqLike<A>>, Set<A> {
+public interface SetLike<A> extends IterableLike<A, SetLike<A>>, Set<A> {
 
     Boolean contains_(A elem);
 
