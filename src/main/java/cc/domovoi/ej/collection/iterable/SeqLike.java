@@ -234,17 +234,11 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
         return this;
     }
 
-    static <B> SeqLike<SeqLike<B>> transpose(SeqLike<SeqLike<B>> seq) {
-        return null;
-    }
+    <B> SeqLike<? extends SeqLike<B>> transpose(Function<? super A, ? extends SeqLike<B>> f);
 
-    static <B, C> Tuple2<SeqLike<B>, SeqLike<C>> unzip(SeqLike<Tuple2<B, C>> seq) {
-        return null;
-    }
+    <B, C> Tuple2<? extends SeqLike<B>, ? extends SeqLike<C>> unzip(Function<? super A, ? extends Tuple2<B, C>> c);
 
-    static <B, C, D>Tuple3<SeqLike<B>, SeqLike<C>, SeqLike<D>> upzip3(SeqLike<Tuple3<B, C, D>> seq) {
-        return null;
-    }
+    <B, C, D>Tuple3<? extends SeqLike<B>, ? extends SeqLike<C>, ? extends SeqLike<D>> upzip3(Function<? super A, ? super Tuple3<B, C, D>> f);
 
     <B> SeqLike<Tuple2<A, B>> zip(SeqLike<B> that);
 

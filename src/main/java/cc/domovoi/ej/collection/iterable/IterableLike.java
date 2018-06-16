@@ -32,15 +32,15 @@ public interface IterableLike<A, Repr extends IterableLike> {
 
     void foreach(Consumer<? super A> f);
 
-    <B> MapLike<B, Repr> groupBy(Function<? super A, ? extends B> f);
+    <B> MapLike<B, ? extends Repr> groupBy(Function<? super A, ? extends B> f);
 
-    SeqLike<Repr> grouped(Integer size);
+    SeqLike<? extends Repr> grouped(Integer size);
 
     A head();
 
     Optional<A> headOption();
 
-    SeqLike<A> init();
+    Repr init();
 
 //    Boolean isEmpty();
 
@@ -66,7 +66,7 @@ public interface IterableLike<A, Repr extends IterableLike> {
 //        return !isEmpty();
 //    }
 
-    Tuple2<Repr, Repr> partition(Predicate<? super A> p);
+    Tuple2<? extends Repr, ? extends Repr> partition(Predicate<? super A> p);
 
     A reduce(BiFunction<? super A, ? super A, ? extends A> op);
 
@@ -76,13 +76,13 @@ public interface IterableLike<A, Repr extends IterableLike> {
 
     Repr slice(Integer from, Integer until);
 
-    SeqLike<Repr> sliding(Integer size);
+    SeqLike<? extends Repr> sliding(Integer size);
 
-    default Tuple2<Repr, Repr> span(Predicate<? super A> p) {
+    default Tuple2<? extends Repr, ? extends Repr> span(Predicate<? super A> p) {
         return new Tuple2<>(takeWhile(p), dropWhile(p));
     }
 
-    Tuple2<Repr, Repr> splitAt(Integer n);
+    Tuple2<? extends Repr, ? extends Repr> splitAt(Integer n);
 
     Repr tail();
 
