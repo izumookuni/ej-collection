@@ -12,6 +12,8 @@ import java.util.stream.IntStream;
 
 public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
 
+    SeqLike<? extends SeqLike<A>> combinations(int n);
+
     Boolean contains_(A elem);
 
     default Boolean endWith(SeqLike<? super A> seq) {
@@ -20,11 +22,11 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
 
     <B> SeqLike<B> flatMap(Function<? super A, ? extends SeqLike<? extends B>> f);
 
-    default Integer indexOf_(A elem) {
+    default int indexOf_(A elem) {
         return indexOf(elem, 0);
     }
 
-    default Integer indexOf(A elem, Integer from) {
+    default int indexOf(A elem, int from) {
         int size = this.size();
         if (from < size) {
             int index = from;
@@ -34,7 +36,7 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
                     break;
                 }
                 else {
-                    index = index + 1;
+                    index += 1;
                 }
             }
             return index != size ? index : -1;
@@ -44,11 +46,11 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
         }
     }
 
-    default Integer indexOfSlice(SeqLike<? super A> that) {
+    default int indexOfSlice(SeqLike<? super A> that) {
         return indexOfSlice(that, 0);
     }
 
-    default Integer indexOfSlice(SeqLike<? super A> that, Integer from) {
+    default int indexOfSlice(SeqLike<? super A> that, int from) {
         int size = this.size();
         int thatSize = that.size();
         if (from + thatSize - 1 < size && thatSize != 0) {
@@ -63,14 +65,14 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
                         break;
                     }
                     else {
-                        index2 = index2 + 1;
+                        index2 += 1;
                     }
                 }
                 if (flag) {
                     break;
                 }
                 else {
-                    index = index + 1;
+                    index += 1;
                 }
             }
             return index != size ? index : -1;
@@ -83,11 +85,11 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
         }
     }
 
-    default Integer indexWhere(Predicate<? super A> p) {
+    default int indexWhere(Predicate<? super A> p) {
         return indexWhere(p, 0);
     }
 
-    default Integer indexWhere(Predicate<? super A> p, Integer from) {
+    default int indexWhere(Predicate<? super A> p, int from) {
         int size = this.size();
         if (from < size) {
             int index = from;
@@ -96,7 +98,7 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
                     break;
                 }
                 else {
-                    index = index + 1;
+                    index += 1;
                 }
             }
             return index != size ? index : -1;
@@ -108,11 +110,11 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
 
     SeqLike<Integer> indices();
 
-    default Integer lastIndexOf_(A elem) {
+    default int lastIndexOf_(A elem) {
         return lastIndexOf(elem, this.size() - 1);
     }
 
-    default Integer lastIndexOf(A elem, Integer end) {
+    default int lastIndexOf(A elem, int end) {
         int size = this.size();
         if (end < size) {
             int index = end;
@@ -122,7 +124,7 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
                     break;
                 }
                 else {
-                    index = index -1;
+                    index -= 1;
                 }
             }
             return index;
@@ -132,11 +134,11 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
         }
     }
 
-    default Integer lastIndexOfSlice(SeqLike<? super A> that) {
+    default int lastIndexOfSlice(SeqLike<? super A> that) {
         return lastIndexOfSlice(that, this.size() - 1);
     }
 
-    default Integer lastIndexOfSlice(SeqLike<? super A> that, Integer end) {
+    default int lastIndexOfSlice(SeqLike<? super A> that, int end) {
         int size = this.size();
         int thatSize = that.size();
         if (thatSize - end < 2 && thatSize != 0) {
@@ -151,14 +153,14 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
                         break;
                     }
                     else {
-                        index2 = index2 + 1;
+                        index2 += 1;
                     }
                 }
                 if (flag) {
                     break;
                 }
                 else {
-                    index = index - 1;
+                    index -= 1;
                 }
             }
             return index;
@@ -171,11 +173,11 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
         }
     }
 
-    default Integer lastIndexWhere(Predicate<? super A> p) {
+    default int lastIndexWhere(Predicate<? super A> p) {
         return lastIndexWhere(p, this.size() - 1);
     }
 
-    default Integer lastIndexWhere(Predicate<? super A> p, Integer end) {
+    default int lastIndexWhere(Predicate<? super A> p, int end) {
         int size = this.size();
         if (end < size) {
             int index = end;
@@ -185,7 +187,7 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
                     break;
                 }
                 else {
-                    index = index -1;
+                    index -= 1;
                 }
             }
             return index;
@@ -197,11 +199,11 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
 
     <B> SeqLike<B> map(Function<? super A, ? extends B> f);
 
-    SeqLike<A> padTo(Integer len, A elem);
+    SeqLike<A> padTo(int len, A elem);
 
-    SeqLike<A> patch(Integer from, SeqLike<? extends A> that, Integer replaced);
+    SeqLike<A> patch(int from, SeqLike<? extends A> that, int replaced);
 
-    default Integer prefixLength(Predicate<? super A> p) {
+    default int prefixLength(Predicate<? super A> p) {
         int size = this.size();
         int index = 0;
         while (index < size) {
@@ -215,6 +217,8 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
         return index;
     }
 
+    SeqLike<? extends SeqLike<A>> permutations();
+
     SeqLike<A> reverse();
 
     default <B> SeqLike<B> reverseMap(Function<? super A, ? extends B> f) {
@@ -223,11 +227,18 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
 
     <B> SeqLike<B> scan(B zero, BiFunction<? super B, ? super A, ? extends B> op);
 
-    <B extends Comparable<B>> SeqLike<A> sortBy(Function<? super A, ? super B> f);
+    <B extends Comparable<B>> SeqLike<A> sortBy(Function<? super A, ? extends B> f);
 
     SeqLike<A> sortWith(Comparator<A> f);
 
-    Boolean startWith(SeqLike<? super A> seq);
+    default Boolean startWith(SeqLike<? super A> seq) {
+        int size = this.size();
+        int thatSeize = seq.size();
+        return size >= thatSeize && IntStream.range(0, thatSeize).allMatch(i -> {
+            A elem = this.get(i);
+            return elem != null ? elem.equals(seq.get(i)) : seq.get(i) != null;
+        });
+    }
 
     @Override
     default SeqLike<A> toSeq() {
@@ -235,16 +246,22 @@ public interface SeqLike<A> extends IterableLike<A, SeqLike<A>>, List<A> {
     }
 
     <B> SeqLike<? extends SeqLike<B>> transpose(Function<? super A, ? extends SeqLike<B>> f);
+    
+    default SeqLike<A> update(int index, A elem) {
+        this.set(index, elem);
+        return this;
+    }
 
-    <B, C> Tuple2<? extends SeqLike<B>, ? extends SeqLike<C>> unzip(Function<? super A, ? extends Tuple2<B, C>> c);
+    SeqLike<A> updated(int index, A elem);
 
-    <B, C, D>Tuple3<? extends SeqLike<B>, ? extends SeqLike<C>, ? extends SeqLike<D>> upzip3(Function<? super A, ? super Tuple3<B, C, D>> f);
+    <B, C> Tuple2<? extends SeqLike<B>, ? extends SeqLike<C>> unzip(Function<? super A, ? extends Tuple2<B, C>> f);
+
+    <B, C, D>Tuple3<? extends SeqLike<B>, ? extends SeqLike<C>, ? extends SeqLike<D>> upzip3(Function<? super A, ? extends Tuple3<B, C, D>> f);
 
     <B> SeqLike<Tuple2<A, B>> zip(SeqLike<B> that);
 
     <B> SeqLike<Tuple2<A, B>> zipAll(SeqLike<B> that, A thisElem, B thatElem);
 
     SeqLike<Tuple2<A, Integer>> zipWithIndex();
-
 
 }

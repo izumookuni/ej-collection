@@ -1,5 +1,6 @@
 package cc.domovoi.ej.collection.tuple;
 
+import cc.domovoi.ej.collection.util.Option;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
@@ -25,6 +26,10 @@ public final class Tuple1<T1> extends Product implements Serializable {
 
     public <T> Tuple1<T> flatMap(Function<? super T1, ? extends Tuple1<T>> f) {
         return f.apply(_1);
+    }
+
+    public Tuple1<T1> copy(Option<T1> _1) {
+        return new Tuple1<>(_1.getOrElse(() -> this._1));
     }
 
     @Override

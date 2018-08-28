@@ -1,5 +1,6 @@
 package cc.domovoi.ej.collection.tuple;
 
+import cc.domovoi.ej.collection.util.Option;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
@@ -28,6 +29,10 @@ public final class Tuple2<T1, T2> extends Product implements Map.Entry<T1, T2>, 
 
     public Tuple2<T2, T1> swap() {
         return new Tuple2<>(this._2, this._1);
+    }
+
+    public Tuple2<T1, T2> copy(Option<T1> _1, Option<T2> _2) {
+        return new Tuple2<>(_1.getOrElse(() -> this._1), _2.getOrElse(() -> this._2));
     }
 
     @Override

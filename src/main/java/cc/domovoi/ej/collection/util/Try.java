@@ -6,6 +6,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -35,7 +36,7 @@ public abstract class Try<T> extends Product implements Serializable {
             return new Success<>(this._exception);
         }
         else {
-            return new Failure<>(new ClassCastException("This object isn't instance of Failure"));
+            return new Failure<>(new NoSuchElementException("This object isn't instance of Failure"));
         }
     }
 
@@ -48,6 +49,10 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
+    public Try<T> filterNot(Predicate<T> p) {
+        return filter(p.negate());
+    }
+
     public <U> Try<U> flatMap(Function<T, Try<U>> f) {
         if (isSuccess()) {
             return f.apply(this._value);
@@ -58,12 +63,13 @@ public abstract class Try<T> extends Product implements Serializable {
     }
 
     public static <U> Try<U> flatten(Try<Try<U>> t) {
-        if (t.isSuccess()) {
-            return t._value;
-        }
-        else {
-            return new Failure<>(t._exception);
-        }
+        return t.flatMap(Function.identity());
+//        if (t.isSuccess()) {
+//            return t._value;
+//        }
+//        else {
+//            return new Failure<>(t._exception);
+//        }
     }
 
     public <U> U fold(Function<Throwable, U> fa, Function<T, U> fb) {
@@ -86,7 +92,7 @@ public abstract class Try<T> extends Product implements Serializable {
             return this._value;
         }
         else {
-            throw new ClassCastException("This object isn't instance of Success");
+            throw new NoSuchElementException("This object isn't instance of Success");
         }
     }
 

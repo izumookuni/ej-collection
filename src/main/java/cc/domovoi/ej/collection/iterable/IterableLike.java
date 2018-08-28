@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.*;
 
-public interface IterableLike<A, Repr extends IterableLike> {
+public interface IterableLike<A, Repr extends IterableLike> extends Iterable<A> {
 
     Repr cons(A elem);
 
     Repr consAll(Repr elems);
 
-    Integer count(Predicate<? super A> p);
+    int count(Predicate<? super A> p);
 
-    Repr drop(Integer n);
+    Repr drop(int n);
 
     Repr dropWhile(Predicate<? super A> p);
 
@@ -26,7 +26,7 @@ public interface IterableLike<A, Repr extends IterableLike> {
 
     Optional<A> find(Predicate<? super A> p);
 
-    <B> B fold(B zero, BiFunction<? super B, ? super A, ? extends A> op);
+    <B> B fold(B zero, BiFunction<? super B, ? super A, ? extends B> op);
 
     Boolean forall(Predicate<? super A> p);
 
@@ -34,7 +34,7 @@ public interface IterableLike<A, Repr extends IterableLike> {
 
     <B> MapLike<B, ? extends Repr> groupBy(Function<? super A, ? extends B> f);
 
-    SeqLike<? extends Repr> grouped(Integer size);
+    SeqLike<? extends Repr> grouped(int size);
 
     A head();
 
@@ -48,9 +48,9 @@ public interface IterableLike<A, Repr extends IterableLike> {
 
     Optional<A> lastOption();
 
-    <B extends Comparable<B>> A maxBy(Function<? super A, ? extends B> f);
+    <B extends Comparable<B>> Optional<A> maxBy(Function<? super A, ? extends B> f);
 
-    <B extends Comparable<B>> A minBy(Function<? super A, ? extends B> f);
+    <B extends Comparable<B>> Optional<A> minBy(Function<? super A, ? extends B> f);
 
     default String mkString() {
         return mkString("");
@@ -74,19 +74,23 @@ public interface IterableLike<A, Repr extends IterableLike> {
 
     int size();
 
-    Repr slice(Integer from, Integer until);
+    Repr slice(int from, int until);
 
-    SeqLike<? extends Repr> sliding(Integer size);
+    default SeqLike<? extends Repr> sliding(int size) {
+        return sliding(size, 1);
+    }
+
+    SeqLike<? extends Repr> sliding(int size, int step);
 
     default Tuple2<? extends Repr, ? extends Repr> span(Predicate<? super A> p) {
         return new Tuple2<>(takeWhile(p), dropWhile(p));
     }
 
-    Tuple2<? extends Repr, ? extends Repr> splitAt(Integer n);
+    Tuple2<? extends Repr, ? extends Repr> splitAt(int n);
 
     Repr tail();
 
-    Repr take(Integer n);
+    Repr take(int n);
 
     Repr takeWhile(Predicate<? super A> p);
 

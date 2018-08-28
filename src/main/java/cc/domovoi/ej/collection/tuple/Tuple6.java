@@ -1,5 +1,6 @@
 package cc.domovoi.ej.collection.tuple;
 
+import cc.domovoi.ej.collection.util.Option;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
@@ -51,6 +52,10 @@ public class Tuple6<T1, T2, T3, T4, T5, T6> extends Product implements Serializa
         this._4 = _4;
         this._5 = _5;
         this._6 = _6;
+    }
+
+    public Tuple6<T1, T2, T3, T4, T5, T6> copy(Option<T1> _1, Option<T2> _2, Option<T3> _3, Option<T4> _4, Option<T5> _5, Option<T6> _6) {
+        return new Tuple6<>(_1.getOrElse(() -> this._1), _2.getOrElse(() -> this._2), _3.getOrElse(() -> this._3), _4.getOrElse(() -> this._4), _5.getOrElse(() -> this._5), _6.getOrElse(() -> this._6));
     }
 
     @Override
