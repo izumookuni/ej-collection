@@ -20,6 +20,6 @@ public final class Success<T> extends Try<T> {
 
     @Override
     public String toString() {
-        return String.format("Success(%s)", this._value.toString());
+        return String.format("Success(%s)", this._value);
     }
 }

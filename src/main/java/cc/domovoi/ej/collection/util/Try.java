@@ -40,7 +40,7 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public Try<T> filter(Predicate<T> p) {
+    public Try<T> filter(Predicate<? super T> p) {
         if (isSuccess() && !p.test(this._value)) {
             return new Failure<>(new AssertionError("Predicate Failure"));
         }
@@ -49,11 +49,11 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public Try<T> filterNot(Predicate<T> p) {
+    public Try<T> filterNot(Predicate<? super T> p) {
         return filter(p.negate());
     }
 
-    public <U> Try<U> flatMap(Function<T, Try<U>> f) {
+    public <U> Try<U> flatMap(Function<? super T, ? extends Try<U>> f) {
         if (isSuccess()) {
             return f.apply(this._value);
         }
@@ -72,7 +72,7 @@ public abstract class Try<T> extends Product implements Serializable {
 //        }
     }
 
-    public <U> U fold(Function<Throwable, U> fa, Function<T, U> fb) {
+    public <U> U fold(Function<? super Throwable, ? extends U> fa, Function<? super T, ? extends U> fb) {
         if (isSuccess()) {
             return fb.apply(this._value);
         }
@@ -81,7 +81,7 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public void foreach(Consumer<T> f) {
+    public void foreach(Consumer<? super T> f) {
         if (isSuccess()) {
             f.accept(this._value);
         }
@@ -96,7 +96,7 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public T getOrElse(Supplier<T> zero) {
+    public T getOrElse(Supplier<? extends T> zero) {
         if (isSuccess()) {
             return this._value;
         }
@@ -105,7 +105,7 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public <U> Try<U> map(Function<T, U> f) {
+    public <U> Try<U> map(Function<? super T, ? extends U> f) {
         if (isSuccess()) {
             return Try.apply(() -> f.apply(this._value));
 //            return new Success<>(f.apply(this._value));
@@ -115,7 +115,7 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public Try<T> orElse(Supplier<Try<T>> zero) {
+    public Try<T> orElse(Supplier<? extends Try<T>> zero) {
         if (isSuccess()) {
             return this;
         }
@@ -124,7 +124,7 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public Try<T> recover(Function<Throwable, T> f) {
+    public Try<T> recover(Function<? super Throwable, ? extends T> f) {
         if (isFailure()) {
             return Try.apply(() -> f.apply(this._exception));
         }
@@ -133,7 +133,7 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public Try<T> recoverWith(Function<Throwable, Try<T>> f) {
+    public Try<T> recoverWith(Function<? super Throwable, ? extends Try<T>> f) {
         if (isFailure()) {
             return f.apply(this._exception);
         }
@@ -151,7 +151,7 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public Optional<T> toOption() {
+    public Optional<T> toOptional() {
         if (isSuccess()) {
             return Optional.of(this._value);
         }
@@ -160,7 +160,16 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
-    public <U> Try<U> transform(Function<T, Try<U>> s, Function<Throwable, Try<U>> f) {
+    public Option<T> toOption() {
+        if (isSuccess()) {
+            return Some.apply(this._value);
+        }
+        else {
+            return None.unit();
+        }
+    }
+
+    public <U> Try<U> transform(Function<? super T, ? extends Try<U>> s, Function<? super Throwable, ? extends Try<U>> f) {
         if (isSuccess()) {
             return s.apply(this._value);
         }

@@ -24,11 +24,11 @@ public abstract class Either<L, R> extends Product implements Serializable {
         return isRight() && r.equals(this._right);
     }
 
-    public Boolean exists(Predicate<R> p) {
+    public Boolean exists(Predicate<? super R> p) {
         return isRight() && p.test(this._right);
     }
 
-    public Either<L, R> filterOrElse(Predicate<R> p, Supplier<L> zero) {
+    public Either<L, R> filterOrElse(Predicate<? super R> p, Supplier<? extends L> zero) {
         if ((isRight() && p.test(_right)) || isLeft()) {
             return this;
         }
@@ -37,7 +37,7 @@ public abstract class Either<L, R> extends Product implements Serializable {
         }
     }
 
-    public <R1> Either<L, R1> flatMap(Function<R, Either<L, R1>> f) {
+    public <R1> Either<L, R1> flatMap(Function<? super R, ? extends Either<L, R1>> f) {
         if (isRight()) {
             return f.apply(this._right);
         }
@@ -46,7 +46,7 @@ public abstract class Either<L, R> extends Product implements Serializable {
         }
     }
 
-    public <T> T fold(Function<L, T> fl, Function<R, T> fr) {
+    public <T> T fold(Function<? super L, ? extends T> fl, Function<? super R, ? extends T> fr) {
         if (isRight()) {
             return fr.apply(this._right);
         }
@@ -55,17 +55,17 @@ public abstract class Either<L, R> extends Product implements Serializable {
         }
     }
 
-    public Boolean forall(Predicate<R> p) {
+    public Boolean forall(Predicate<? super R> p) {
         return (isRight() && p.test(this._right)) || isLeft();
     }
 
-    public void foreach(Consumer<R> f) {
+    public void foreach(Consumer<? super R> f) {
         if (isRight()) {
             f.accept(this._right);
         }
     }
 
-    public R getOrElse(Supplier<R> zero) {
+    public R getOrElse(Supplier<? extends R> zero) {
         if (isRight()) {
             return this._right;
         }
@@ -116,7 +116,7 @@ public abstract class Either<L, R> extends Product implements Serializable {
         }
     }
 
-    public <T> Either<L, T> map(Function<R, T> f) {
+    public <T> Either<L, T> map(Function<? super R, ? extends T> f) {
         if (isRight()) {
             return new Right<>(f.apply(this._right));
         }
@@ -134,12 +134,21 @@ public abstract class Either<L, R> extends Product implements Serializable {
         }
     }
 
-    public Optional<R> toOption() {
+    public Optional<R> toOptional() {
         if (isRight()) {
             return Optional.of(this._right);
         }
         else {
             return Optional.empty();
+        }
+    }
+
+    public Option<R> toOption() {
+        if (isRight()) {
+            return Some.apply(this._right);
+        }
+        else {
+            return None.unit();
         }
     }
 

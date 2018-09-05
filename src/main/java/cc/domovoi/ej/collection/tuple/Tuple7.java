@@ -67,12 +67,12 @@ public class Tuple7<T1, T2, T3, T4, T5, T6, T7> extends Product implements Seria
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 125).append(_1).append(_2).append(_3).append(_4).append(_5).append(_6).append(_7).toHashCode();
+        return new HashCodeBuilder(111, 125).append(this._1).append(this._2).append(this._3).append(this._4).append(this._5).append(this._6).append(this._7).toHashCode();
     }
 
     @Override
     public String toString() {
-        return String.format("Tuple7(%s,%s,%s,%s,%s,%s,%s)", this._1.toString(), this._2.toString(), this._3.toString(), this._4.toString(), this._5.toString(), this._6.toString(), this._7.toString());
+        return String.format("Tuple7(%s,%s,%s,%s,%s,%s,%s)", this._1, this._2, this._3, this._4, this._5, this._6, this._7);
     }
 
     @Override

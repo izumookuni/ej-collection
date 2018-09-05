@@ -126,8 +126,8 @@ public class EitherTest {
 
     @Test
     public void testToOption() {
-        Optional<Double> optionalDouble1 = either1.toOption();
-        Optional<Double> optionalDouble2 = either2.toOption();
+        Optional<Double> optionalDouble1 = either1.toOptional();
+        Optional<Double> optionalDouble2 = either2.toOptional();
         Assert.assertTrue(optionalDouble1.isPresent() && optionalDouble1.get() == 3.14);
         Assert.assertFalse(optionalDouble2.isPresent());
     }

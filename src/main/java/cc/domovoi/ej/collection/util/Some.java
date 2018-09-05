@@ -20,6 +20,6 @@ public class Some<T> extends Option<T> {
 
     @Override
     public String toString() {
-        return "Some(" + this._value.toString() + ")";
+        return String.format("Some(%s)", this._value);
     }
 }

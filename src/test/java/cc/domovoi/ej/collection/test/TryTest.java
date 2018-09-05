@@ -129,8 +129,8 @@ public class TryTest {
 
     @Test
     public void testToOption() {
-        Optional<Integer> optionalInteger1 = successfulTry.toOption();
-        Optional<Integer> optionalInteger2 = failingTry.toOption();
+        Optional<Integer> optionalInteger1 = successfulTry.toOptional();
+        Optional<Integer> optionalInteger2 = failingTry.toOptional();
         Assert.assertTrue(optionalInteger1.isPresent() && optionalInteger1.get() == 1);
         Assert.assertFalse(optionalInteger2.isPresent());
     }

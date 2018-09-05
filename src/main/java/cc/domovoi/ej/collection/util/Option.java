@@ -45,11 +45,11 @@ public abstract class Option<T> extends Product implements Serializable {
         return !isEmpty() && ((elem != null && elem.equals(this._value)) || this._value == null);
     }
 
-    public Boolean exist(Predicate<T> p) {
+    public Boolean exist(Predicate<? super T> p) {
         return !isEmpty() && p.test(this._value);
     }
 
-    public Option<T> filter(Predicate<T> p) {
+    public Option<T> filter(Predicate<? super T> p) {
         if (!isEmpty() && !p.test(this._value)) {
             return None.unit();
         }
@@ -58,11 +58,11 @@ public abstract class Option<T> extends Product implements Serializable {
         }
     }
 
-    public Option<T> filterNot(Predicate<T> p) {
+    public Option<T> filterNot(Predicate<? super T> p) {
         return filter(p.negate());
     }
 
-    public <U> Option<U> flatMap(Function<T, Option<U>> op) {
+    public <U> Option<U> flatMap(Function<? super T, ? extends Option<U>> op) {
         if (!isEmpty()) {
             return op.apply(this._value);
         }
@@ -75,7 +75,7 @@ public abstract class Option<T> extends Product implements Serializable {
         return option.flatMap(Function.identity());
     }
 
-    public <U> U fold(U zero, Function<T, U> op) {
+    public <U> U fold(U zero, Function<? super T, ? extends U> op) {
         if (!isEmpty()) {
             return op.apply(this._value);
         }
@@ -84,17 +84,17 @@ public abstract class Option<T> extends Product implements Serializable {
         }
     }
 
-    public Boolean forall(Predicate<T> p) {
+    public Boolean forall(Predicate<? super T> p) {
         return (!isEmpty() && p.test(this._value)) || isEmpty();
     }
 
-    public void foreach(Consumer<T> op) {
+    public void foreach(Consumer<? super T> op) {
         if (!isEmpty()) {
             op.accept(this._value);
         }
     }
 
-    public T getOrElse(Supplier<T> zero) {
+    public T getOrElse(Supplier<? extends T> zero) {
         if (!isEmpty()) {
             return this._value;
         }
@@ -103,7 +103,7 @@ public abstract class Option<T> extends Product implements Serializable {
         }
     }
 
-    public <U> Option<U> map(Function<T, U> op) {
+    public <U> Option<U> map(Function<? super T, ? extends U> op) {
         return flatMap(op.andThen(Some::apply));
     }
 
@@ -111,7 +111,7 @@ public abstract class Option<T> extends Product implements Serializable {
         return !isEmpty();
     }
 
-    public Option<T> orElse(Supplier<Option<T>> zero) {
+    public Option<T> orElse(Supplier<? extends Option<T>> zero) {
         if (!isEmpty()) {
             return this;
         }
@@ -138,7 +138,7 @@ public abstract class Option<T> extends Product implements Serializable {
         }
     }
 
-    public <U> Either<T, U> toLeft(Supplier<U> right) {
+    public <U> Either<T, U> toLeft(Supplier<? extends U> right) {
         if (!isEmpty()) {
             return new Left<>(this._value);
         }
@@ -147,7 +147,7 @@ public abstract class Option<T> extends Product implements Serializable {
         }
     }
 
-    public <U> Either<U, T> toRight(Supplier<U> left) {
+    public <U> Either<U, T> toRight(Supplier<? extends U> left) {
         if (!isEmpty()) {
             return new Right<>(this._value);
         }

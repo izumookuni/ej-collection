@@ -53,12 +53,12 @@ public class Tuple5<T1, T2, T3, T4, T5> extends Product implements Serializable 
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 121).append(_1).append(_2).append(_3).append(_4).append(_5).toHashCode();
+        return new HashCodeBuilder(111, 121).append(this._1).append(this._2).append(this._3).append(this._4).append(this._5).toHashCode();
     }
 
     @Override
     public String toString() {
-        return String.format("Tuple5(%s,%s,%s,%s,%s)", this._1.toString(), this._2.toString(), this._3.toString(), this._4.toString(), this._5.toString());
+        return String.format("Tuple5(%s,%s,%s,%s,%s)", this._1, this._2, this._3, this._4, this._5);
     }
 
     @Override

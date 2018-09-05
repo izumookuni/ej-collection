@@ -28,6 +28,6 @@ public final class Left<L, R> extends Either<L, R> {
 
     @Override
     public String toString() {
-        return String.format("Left(%s)", this._left.toString());
+        return String.format("Left(%s)", this._left);
     }
 }

@@ -39,12 +39,12 @@ public final class Tuple3<T1, T2, T3> extends Product implements Serializable {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 117).append(_1).append(_2).append(_3).toHashCode();
+        return new HashCodeBuilder(111, 117).append(this._1).append(this._2).append(this._3).toHashCode();
     }
 
     @Override
     public String toString() {
-        return String.format("Tuple3(%s,%s,%s)", this._1.toString(), this._2.toString(), this._3.toString());
+        return String.format("Tuple3(%s,%s,%s)", this._1, this._2, this._3);
     }
 
     @Override

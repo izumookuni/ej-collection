@@ -52,12 +52,12 @@ public final class Tuple2<T1, T2> extends Product implements Map.Entry<T1, T2>, 
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 115).append(_1).append(_2).toHashCode();
+        return new HashCodeBuilder(111, 115).append(this._1).append(this._2).toHashCode();
     }
 
     @Override
     public String toString() {
-        return String.format("Tuple2(%s,%s)", this._1.toString(), this._2.toString());
+        return String.format("Tuple2(%s,%s)", this._1, this._2);
     }
 
     @Override
