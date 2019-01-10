@@ -1,5 +1,8 @@
 package cc.domovoi.ej.collection.tuple;
 
+/**
+ * This class contains various methods for manipulating Tuples.
+ */
 public class Tuples {
 
     public static <T1> Tuple1<T1> of(T1 _1) {

@@ -1,11 +1,19 @@
 package cc.domovoi.ej.collection.tuple;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * A tuple of 6 elements.
+ * @param <T1> Element 1 type of this Tuple6
+ * @param <T2> Element 2 type of this Tuple6
+ * @param <T3> Element 3 type of this Tuple6
+ * @param <T4> Element 4 type of this Tuple6
+ * @param <T5> Element 5 type of this Tuple6
+ * @param <T6> Element 6 type of this Tuple6
+ */
 public class Tuple6<T1, T2, T3, T4, T5, T6> extends Product implements Serializable {
 
     private T1 _1;
@@ -54,8 +62,22 @@ public class Tuple6<T1, T2, T3, T4, T5, T6> extends Product implements Serializa
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Tuple6<?, ?, ?, ?, ?, ?> tuple6 = (Tuple6<?, ?, ?, ?, ?, ?>) o;
+        return Objects.equals(_1, tuple6._1) &&
+                Objects.equals(_2, tuple6._2) &&
+                Objects.equals(_3, tuple6._3) &&
+                Objects.equals(_4, tuple6._4) &&
+                Objects.equals(_5, tuple6._5) &&
+                Objects.equals(_6, tuple6._6);
+    }
+
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 123).append(_1).append(_2).append(_3).append(_4).append(_5).append(_6).toHashCode();
+        return Objects.hash(_1, _2, _3, _4, _5, _6);
     }
 
     @Override

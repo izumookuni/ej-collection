@@ -1,13 +1,17 @@
 package cc.domovoi.ej.collection.tuple;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-public final class Tuple2<T1, T2> extends Product implements Map.Entry<T1, T2>, Serializable {
+/**
+ * A tuple of 2 elements.
+ * @param <T1> Element 1 type of this Tuple2
+ * @param <T2> Element 2 type of this Tuple2
+ */
+public class Tuple2<T1, T2> extends Product implements Map.Entry<T1, T2>, Serializable {
 
     private T1 _1;
 
@@ -46,8 +50,18 @@ public final class Tuple2<T1, T2> extends Product implements Map.Entry<T1, T2>, 
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Tuple2<?, ?> tuple2 = (Tuple2<?, ?>) o;
+        return Objects.equals(_1, tuple2._1) &&
+                Objects.equals(_2, tuple2._2);
+    }
+
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 115).append(_1).append(_2).toHashCode();
+        return Objects.hash(_1, _2);
     }
 
     @Override

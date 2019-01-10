@@ -1,5 +1,11 @@
 package cc.domovoi.ej.collection.util;
 
+/**
+ * The left side of the disjoint union, as opposed to the {@link cc.domovoi.ej.collection.util.Right} side.
+ *
+ * @param <L> Left type of this Either instance
+ * @param <R> Right type of this Either instance
+ */
 public final class Left<L, R> extends Either<L, R> {
 
     public Left(L left) {

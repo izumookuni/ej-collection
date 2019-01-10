@@ -1,27 +1,54 @@
 package cc.domovoi.ej.collection.util;
 
 import cc.domovoi.ej.collection.tuple.Product;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * The `Try` type represents a computation that may either result in an exception, or return a
+ * successfully computed value. It's similar to, but semantically different from the {@link cc.domovoi.ej.collection.util.Either} type.
+ * <p>
+ * Instances of `Try&lt;T&gt;`;, are either an instance of {@link cc.domovoi.ej.collection.util.Success}&lt;T&gt; or {@link cc.domovoi.ej.collection.util.Failure}&lt;T&gt;.
+ *
+ * @param <T> Element type of this Try
+ */
 public abstract class Try<T> extends Product implements Serializable {
 
     protected T _value;
 
     protected Throwable _exception;
 
+    /**
+     * Returns `true` if the `Try` is a `Failure`, `false` otherwise.
+     *
+     * @return Returns `true` if the `Try` is a `Failure`, `false` otherwise.
+     */
     public abstract Boolean isFailure();
 
+    /**
+     * Returns `true` if the `Try` is a `Success`, `false` otherwise.
+     *
+     * @return Returns `true` if the `Try` is a `Success`, `false` otherwise.
+     */
     public abstract Boolean isSuccess();
 
+    /**
+     * Constructs a `Try` using the by-name parameter.  This
+     * method will ensure any non-fatal exception is caught and a
+     * `Failure` object is returned.
+     *
+     * @param supplier the element supplier
+     * @param <T1>     element type of this Try
+     * @return a Try instance
+     */
     public static <T1> Try<T1> apply(Supplier<T1> supplier) {
         try {
             return new Success<>(supplier.get());
@@ -30,150 +57,249 @@ public abstract class Try<T> extends Product implements Serializable {
         }
     }
 
+    /**
+     * Inverts this `Try`. If this is a `Failure`, returns its exception wrapped in a `Success`.
+     * If this is a `Success`, returns a `Failure` containing an `UnsupportedOperationException`.
+     *
+     * @return If this is a `Failure`, returns its exception wrapped in a `Success`;
+     * If this is a `Success`, returns a `Failure` containing an `UnsupportedOperationException`.
+     */
     public Try<Throwable> failed() {
         if (isFailure()) {
             return new Success<>(this._exception);
-        }
-        else {
-            return new Failure<>(new ClassCastException("This object isn't instance of Failure"));
+        } else {
+            return new Failure<>(new UnsupportedOperationException("This object isn't instance of Failure"));
         }
     }
 
+    /**
+     * Converts this to a `Failure` if the predicate is not satisfied.
+     *
+     * @param p Predicate function
+     * @return `Failure` if the predicate is not satisfied, or this.
+     */
     public Try<T> filter(Predicate<T> p) {
         if (isSuccess() && !p.test(this._value)) {
             return new Failure<>(new AssertionError("Predicate Failure"));
-        }
-        else {
+        } else {
             return this;
         }
     }
 
+    /**
+     * Returns the given function applied to the value from this `Success` or returns this if this is a `Failure`.
+     *
+     * @param f   the given function
+     * @param <U> the result type of applying the function
+     * @return Returns the given function applied to the value from this `Success` or returns this if this is a `Failure`.
+     */
     public <U> Try<U> flatMap(Function<T, Try<U>> f) {
         if (isSuccess()) {
             return f.apply(this._value);
-        }
-        else {
+        } else {
             return new Failure<>(this._exception);
         }
     }
 
+    /**
+     * Transforms a nested `Try`, ie, a `Try` of type `Try&lt;Try&lt;T&gt;&gt;`,
+     * into an un-nested `Try`, ie, a `Try` of type `Try&lt;T&gt;`.
+     *
+     * @param t   A `Try` instance
+     * @param <U> Element type of this Try
+     * @return A flatten `Try` instance
+     */
     public static <U> Try<U> flatten(Try<Try<U>> t) {
         if (t.isSuccess()) {
             return t._value;
-        }
-        else {
+        } else {
             return new Failure<>(t._exception);
         }
     }
 
+    /**
+     * Applies `fa` if this is a `Failure` or `fb` if this is a `Success`.
+     * If `fb` is initially applied and throws an exception,
+     * then `fa` is applied with this exception.
+     *
+     * @param fa  the function to apply if this is a `Failure`
+     * @param fb  the function to apply if this is a `Success`
+     * @param <U> the result type of applying the function
+     * @return the results of applying the function
+     */
     public <U> U fold(Function<Throwable, U> fa, Function<T, U> fb) {
         if (isSuccess()) {
             return fb.apply(this._value);
-        }
-        else {
+        } else {
             return fa.apply(this._exception);
         }
     }
 
+    /**
+     * Applies the given function `f` if this is a `Success`, otherwise returns `Unit` if this is a `Failure`.
+     * <p>
+     * If `f` throws, then this method may throw an exception.
+     *
+     * @param f The side-effecting function to execute.
+     */
     public void foreach(Consumer<T> f) {
         if (isSuccess()) {
             f.accept(this._value);
         }
     }
 
+    /**
+     * Returns the value from this `Success` or throws the exception if this is a `Failure`.
+     *
+     * @return Returns the value from this `Success` or throws the exception if this is a `Failure`.
+     */
     public T get() {
         if (isSuccess()) {
             return this._value;
-        }
-        else {
+        } else {
             throw new ClassCastException("This object isn't instance of Success");
         }
     }
 
+    /**
+     * Returns the value from this `Success` or the given `default` argument if this is a `Failure`.
+     * <p>
+     * This will throw an exception if it is not a success and default throws an exception.
+     *
+     * @param zero the default argument
+     * @return Returns the value from this `Success` or the given `default` argument if this is a `Failure`.
+     */
     public T getOrElse(Supplier<T> zero) {
         if (isSuccess()) {
             return this._value;
-        }
-        else {
+        } else {
             return zero.get();
         }
     }
 
+    /**
+     * Maps the given function to the value from this `Success` or returns this if this is a `Failure`.
+     *
+     * @param f   the given function
+     * @param <U> the result type of applying the function
+     * @return Returns the given function applied to the value from this `Success` or returns this if this is a `Failure`.
+     */
     public <U> Try<U> map(Function<T, U> f) {
         if (isSuccess()) {
             return Try.apply(() -> f.apply(this._value));
 //            return new Success<>(f.apply(this._value));
-        }
-        else {
+        } else {
             return new Failure<>(this._exception);
         }
     }
 
+    /**
+     * Returns this `Try` if it's a `Success` or the given `default` argument if this is a `Failure`.
+     *
+     * @param zero the given `default` argument
+     * @return Returns this `Try` if it's a `Success` or the given `default` argument if this is a `Failure`.
+     */
     public Try<T> orElse(Supplier<Try<T>> zero) {
         if (isSuccess()) {
             return this;
-        }
-        else {
+        } else {
             return zero.get();
         }
     }
 
+    /**
+     * Applies the given function `f` if this is a `Failure`, otherwise returns this if this is a `Success`.
+     * This is like map for the exception.
+     *
+     * @param f the given recover function
+     * @return Returns this if this is a `Success`, or a new `Try` instance applies the given function `f`.
+     */
     public Try<T> recover(Function<Throwable, T> f) {
         if (isFailure()) {
             return Try.apply(() -> f.apply(this._exception));
-        }
-        else {
+        } else {
             return this;
         }
     }
 
+    /**
+     * Applies the given function `f` if this is a `Failure`, otherwise returns this if this is a `Success`.
+     * This is like `flatMap` for the exception.
+     *
+     * @param f the given recover function
+     * @return Returns this if this is a `Success`, or a new `Try` instance applies the given function `f`.
+     */
     public Try<T> recoverWith(Function<Throwable, Try<T>> f) {
         if (isFailure()) {
             return f.apply(this._exception);
-        }
-        else {
+        } else {
             return this;
         }
     }
 
+    /**
+     * Returns `Left` with `Throwable` if this is a `Failure`, otherwise returns `Right` with `Success` value.
+     *
+     * @return Returns `Left` with `Throwable` if this is a `Failure`, otherwise returns `Right` with `Success` value.
+     */
     public Either<Throwable, T> toEither() {
         if (isSuccess()) {
             return new Right<>(this._value);
-        }
-        else {
+        } else {
             return new Left<>(this._exception);
         }
     }
 
+    /**
+     * Returns `None` if this is a `Failure` or a `Some` containing the value if this is a `Success`.
+     *
+     * @return Returns `None` if this is a `Failure` or a `Some` containing the value if this is a `Success`.
+     */
     public Optional<T> toOption() {
         if (isSuccess()) {
             return Optional.of(this._value);
-        }
-        else {
+        } else {
             return Optional.empty();
         }
     }
 
+    /**
+     * Completes this `Try` by applying the function `f` to this if this is of type `Failure`, or conversely, by applying
+     * `s` if this is a `Success`.
+     *
+     * @param s   the function to apply if this is a `Failure`
+     * @param f   the function to apply if this is a `Success`
+     * @param <U> the result type of applying the function
+     * @return the results of applying the function
+     */
     public <U> Try<U> transform(Function<T, Try<U>> s, Function<Throwable, Try<U>> f) {
         if (isSuccess()) {
             return s.apply(this._value);
-        }
-        else {
+        } else {
             return f.apply(this._exception);
         }
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Try<?> aTry = (Try<?>) o;
+        return Objects.equals(_value, aTry._value) &&
+                Objects.equals(_exception, aTry._exception);
+    }
+
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(113, 117).append(_value).append(_exception).toHashCode();
+        return Objects.hash(_value, _exception);
     }
 
     @Override
     public Integer productArity() {
         if (isFailure()) {
             return 0;
-        }
-        else {
+        } else {
             return 1;
         }
     }
@@ -182,18 +308,16 @@ public abstract class Try<T> extends Product implements Serializable {
     public Object productElement(Integer n) {
         if (isSuccess() && n == 0) {
             return this._value;
-        }
-        else {
+        } else {
             throw new IndexOutOfBoundsException();
         }
     }
 
     @Override
     public List<Object> productCollection() {
-        if(isSuccess()) {
+        if (isSuccess()) {
             return Collections.singletonList(this._value);
-        }
-        else {
+        } else {
             return Collections.emptyList();
         }
     }
