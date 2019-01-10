@@ -1,12 +1,18 @@
 package cc.domovoi.ej.collection.tuple;
 
 import cc.domovoi.ej.collection.util.Option;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * A tuple of 3 elements.
+ * @param <T1> Element 1 type of this Tuple3
+ * @param <T2> Element 2 type of this Tuple3
+ * @param <T3> Element 3 type of this Tuple3
+ */
 public final class Tuple3<T1, T2, T3> extends Product implements Serializable {
 
     private T1 _1;
@@ -38,8 +44,19 @@ public final class Tuple3<T1, T2, T3> extends Product implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Tuple3<?, ?, ?> tuple3 = (Tuple3<?, ?, ?>) o;
+        return Objects.equals(_1, tuple3._1) &&
+                Objects.equals(_2, tuple3._2) &&
+                Objects.equals(_3, tuple3._3);
+    }
+
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 117).append(this._1).append(this._2).append(this._3).toHashCode();
+        return Objects.hash(_1, _2, _3);
     }
 
     @Override

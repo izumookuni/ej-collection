@@ -1,5 +1,8 @@
 package cc.domovoi.ej.collection.util;
 
+/**
+ * @param <T> Element type of this Try
+ */
 public final class Failure<T> extends Try<T> {
 
     public Failure(Throwable exception) {

@@ -1,5 +1,8 @@
 package cc.domovoi.ej.collection.util;
 
+/**
+ * @param <T> Element type of this Try
+ */
 public final class Success<T> extends Try<T> {
 
     public Success(T success) {

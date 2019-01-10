@@ -1,12 +1,19 @@
 package cc.domovoi.ej.collection.tuple;
 
 import cc.domovoi.ej.collection.util.Option;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * A tuple of 4 elements.
+ * @param <T1> Element 1 type of this Tuple4
+ * @param <T2> Element 2 type of this Tuple4
+ * @param <T3> Element 3 type of this Tuple4
+ * @param <T4> Element 4 type of this Tuple4
+ */
 public class Tuple4<T1, T2, T3, T4> extends Product implements Serializable {
 
     private T1 _1;
@@ -45,8 +52,20 @@ public class Tuple4<T1, T2, T3, T4> extends Product implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Tuple4<?, ?, ?, ?> tuple4 = (Tuple4<?, ?, ?, ?>) o;
+        return Objects.equals(_1, tuple4._1) &&
+                Objects.equals(_2, tuple4._2) &&
+                Objects.equals(_3, tuple4._3) &&
+                Objects.equals(_4, tuple4._4);
+    }
+
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 119).append(this._1).append(this._2).append(this._3).append(this._4).toHashCode();
+        return Objects.hash(_1, _2, _3, _4);
     }
 
     @Override

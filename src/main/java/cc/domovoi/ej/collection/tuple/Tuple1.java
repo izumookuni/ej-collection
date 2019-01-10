@@ -1,14 +1,18 @@
 package cc.domovoi.ej.collection.tuple;
 
 import cc.domovoi.ej.collection.util.Option;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
-public final class Tuple1<T1> extends Product implements Serializable {
+/**
+ * A tuple of 1 elements.
+ * @param <T1> Element 1 type of this Tuple1
+ */
+public class Tuple1<T1> extends Product implements Serializable {
 
     private T1 _1;
 
@@ -33,8 +37,17 @@ public final class Tuple1<T1> extends Product implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Tuple1<?> tuple1 = (Tuple1<?>) o;
+        return Objects.equals(_1, tuple1._1);
+    }
+
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(111, 113).append(this._1).toHashCode();
+        return Objects.hash(_1);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package cc.domovoi.ej.collection.tuple;
 
+/**
+ * Base class for all tuples.
+ */
 public abstract class Product implements ProductLike {
 
     @Override
