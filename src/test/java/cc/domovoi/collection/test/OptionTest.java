@@ -1,6 +1,6 @@
-package cc.domovoi.ej.collection.test;
+package cc.domovoi.collection.test;
 
-import cc.domovoi.ej.collection.util.*;
+import cc.domovoi.collection.util.*;
 import org.junit.Assert;
 import org.junit.Test;
 

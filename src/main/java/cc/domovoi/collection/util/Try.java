@@ -1,6 +1,4 @@
-package cc.domovoi.ej.collection.util;
-
-import cc.domovoi.ej.collection.tuple.Product;
+package cc.domovoi.collection.util;
 
 import java.io.Serializable;
 import java.util.*;
@@ -11,9 +9,9 @@ import java.util.function.Supplier;
 
 /**
  * The `Try` type represents a computation that may either result in an exception, or return a
- * successfully computed value. It's similar to, but semantically different from the {@link cc.domovoi.ej.collection.util.Either} type.
+ * successfully computed value. It's similar to, but semantically different from the {@link cc.domovoi.collection.util.Either} type.
  * <p>
- * Instances of `Try&lt;T&gt;`;, are either an instance of {@link cc.domovoi.ej.collection.util.Success}&lt;T&gt; or {@link cc.domovoi.ej.collection.util.Failure}&lt;T&gt;.
+ * Instances of `Try&lt;T&gt;`;, are either an instance of {@link cc.domovoi.collection.util.Success}&lt;T&gt; or {@link cc.domovoi.collection.util.Failure}&lt;T&gt;.
  *
  * @param <T> Element type of this Try
  */
@@ -167,6 +165,14 @@ public abstract class Try<T> extends Product implements Serializable {
             return this._value;
         } else {
             return zero.get();
+        }
+    }
+
+    public T getOrElse(T zero) {
+        if (isSuccess()) {
+            return this._value;
+        } else {
+            return zero;
         }
     }
 

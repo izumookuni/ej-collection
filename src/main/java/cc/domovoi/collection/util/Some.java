@@ -1,4 +1,4 @@
-package cc.domovoi.ej.collection.util;
+package cc.domovoi.collection.util;
 
 public class Some<T> extends Option<T> {
 

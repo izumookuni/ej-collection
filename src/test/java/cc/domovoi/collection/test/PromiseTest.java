@@ -1,7 +1,7 @@
-package cc.domovoi.ej.collection.test;
+package cc.domovoi.collection.test;
 
-import cc.domovoi.ej.collection.util.Promise;
-import cc.domovoi.ej.collection.util.Try;
+import cc.domovoi.collection.util.Promise;
+import cc.domovoi.collection.util.Try;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,6 +1,4 @@
-package cc.domovoi.ej.collection.util;
-
-import cc.domovoi.ej.collection.tuple.Product;
+package cc.domovoi.collection.util;
 
 import java.io.Serializable;
 import java.util.*;
@@ -11,7 +9,7 @@ import java.util.function.Supplier;
 
 /**
  * Represents a value of one of two possible types (a disjoint union.)
- * An instance of `Either` is an instance of either {@link cc.domovoi.ej.collection.util.Left} or {@link cc.domovoi.ej.collection.util.Right}.
+ * An instance of `Either` is an instance of either {@link cc.domovoi.collection.util.Left} or {@link cc.domovoi.collection.util.Right}.
  *
  * @param <L> Left type of this Either instance
  * @param <R> Right type of this Either instance

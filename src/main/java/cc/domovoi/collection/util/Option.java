@@ -1,13 +1,7 @@
-package cc.domovoi.ej.collection.util;
-
-import cc.domovoi.ej.collection.tuple.Product;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+package cc.domovoi.collection.util;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -166,8 +160,17 @@ public abstract class Option<T> extends Product implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Option<?> option = (Option<?>) o;
+        return (_value != null && _value.equals(option._value)) || (_value == null && option._value == null);
+    }
+
+    @Override
     public int hashCode() {
-        return new HashCodeBuilder(113, 119).append(isEmpty()).append(this._value).toHashCode();
+        return Objects.hash(_value);
     }
 
     @Override

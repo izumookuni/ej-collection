@@ -1,9 +1,10 @@
-package cc.domovoi.ej.collection.test;
+package cc.domovoi.collection.test;
 
-import cc.domovoi.ej.collection.util.Either;
-import cc.domovoi.ej.collection.util.Left;
-import cc.domovoi.ej.collection.util.Right;
-import cc.domovoi.ej.collection.util.Try;
+
+import cc.domovoi.collection.util.Either;
+import cc.domovoi.collection.util.Left;
+import cc.domovoi.collection.util.Right;
+import cc.domovoi.collection.util.Try;
 import org.junit.Assert;
 import org.junit.Test;
 

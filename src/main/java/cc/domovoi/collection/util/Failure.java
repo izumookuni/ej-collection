@@ -1,4 +1,4 @@
-package cc.domovoi.ej.collection.util;
+package cc.domovoi.collection.util;
 
 /**
  * @param <T> Element type of this Try

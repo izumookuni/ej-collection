@@ -1,4 +1,4 @@
-package cc.domovoi.ej.collection.tuple;
+package cc.domovoi.collection.util;
 
 /**
  * Base class for all tuples.

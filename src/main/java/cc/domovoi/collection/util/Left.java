@@ -1,7 +1,7 @@
-package cc.domovoi.ej.collection.util;
+package cc.domovoi.collection.util;
 
 /**
- * The left side of the disjoint union, as opposed to the {@link cc.domovoi.ej.collection.util.Right} side.
+ * The left side of the disjoint union, as opposed to the {@link cc.domovoi.collection.util.Right} side.
  *
  * @param <L> Left type of this Either instance
  * @param <R> Right type of this Either instance
