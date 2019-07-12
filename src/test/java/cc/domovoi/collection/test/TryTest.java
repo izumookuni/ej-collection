@@ -1,10 +1,13 @@
 package cc.domovoi.collection.test;
 
 import cc.domovoi.collection.util.Either;
+import cc.domovoi.collection.util.Failure;
+import cc.domovoi.collection.util.Success;
 import cc.domovoi.collection.util.Try;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class TryTest {
@@ -55,8 +58,8 @@ public class TryTest {
 
     @Test
     public void testFold() {
-        Integer i1 = successfulTry.fold(throwable -> Integer.MAX_VALUE, integer -> integer + 2);
-        Integer i2 = failingTry.fold(throwable -> Integer.MAX_VALUE, integer -> integer + 2);
+        Integer i1 = successfulTry.fold(exception -> Integer.MAX_VALUE, integer -> integer + 2);
+        Integer i2 = failingTry.fold(exception -> Integer.MAX_VALUE, integer -> integer + 2);
         Assert.assertTrue(i1 == 3);
         Assert.assertTrue(i2 == Integer.MAX_VALUE);
     }
@@ -93,11 +96,11 @@ public class TryTest {
 
     @Test
     public void testRecover() {
-        Try<Integer> integerTry1 = failingTry.recover(throwable -> throwable.getMessage().length());
-        Try<Integer> integerTry2 = failingTry.recover(throwable -> {
+        Try<Integer> integerTry1 = failingTry.recover(exception -> exception.getMessage().length());
+        Try<Integer> integerTry2 = failingTry.recover(exception -> {
             throw new RuntimeException("error1");
         });
-        Try<Integer> integerTry3 = successfulTry.recover(throwable -> {
+        Try<Integer> integerTry3 = successfulTry.recover(exception -> {
             throw new RuntimeException("error2");
         });
         Assert.assertTrue(integerTry1.isSuccess() && integerTry1.get() == "/ by zero".length());
@@ -107,11 +110,11 @@ public class TryTest {
 
     @Test
     public void testRecoverWith() {
-        Try<Integer> integerTry1 = failingTry.recoverWith(throwable -> Try.apply(() -> throwable.getMessage().length()));
-        Try<Integer> integerTry2 = failingTry.recoverWith(throwable -> Try.apply(() -> {
+        Try<Integer> integerTry1 = failingTry.recoverWith(exception -> Try.apply(() -> exception.getMessage().length()));
+        Try<Integer> integerTry2 = failingTry.recoverWith(exception -> Try.apply(() -> {
             throw new RuntimeException("error1");
         }));
-        Try<Integer> integerTry3 = successfulTry.recoverWith(throwable -> Try.apply(() -> {
+        Try<Integer> integerTry3 = successfulTry.recoverWith(exception -> Try.apply(() -> {
             throw new RuntimeException("error2");
         }));
         Assert.assertTrue(integerTry1.isSuccess() && integerTry1.get() == "/ by zero".length());
@@ -121,8 +124,8 @@ public class TryTest {
 
     @Test
     public void testToEither() {
-        Either<Throwable, Integer> either1 = successfulTry.toEither();
-        Either<Throwable, Integer> either2 = failingTry.toEither();
+        Either<Exception, Integer> either1 = successfulTry.toEither();
+        Either<Exception, Integer> either2 = failingTry.toEither();
         Assert.assertTrue(either1.isRight() && either1.right().get() == 1);
         Assert.assertTrue(either2.isLeft() && "/ by zero".equals(either2.left().get().getMessage()));
     }
@@ -137,12 +140,12 @@ public class TryTest {
 
     @Test
     public void testTransform() {
-        Try<Long> longTry1 = successfulTry.transform(integer -> Try.apply(() -> integer + 1000L), throwable -> Try.apply(() -> throwable.getMessage().length() + 1000L));
-        Try<Long> longTry2 = failingTry.transform(integer -> Try.apply(() -> integer + 1000L), throwable -> Try.apply(() -> throwable.getMessage().length() + 1000L));
+        Try<Long> longTry1 = successfulTry.transform(integer -> Try.apply(() -> integer + 1000L), exception -> Try.apply(() -> exception.getMessage().length() + 1000L));
+        Try<Long> longTry2 = failingTry.transform(integer -> Try.apply(() -> integer + 1000L), exception -> Try.apply(() -> exception.getMessage().length() + 1000L));
         Try<Long> longTry3 = successfulTry.transform(integer -> Try.apply(() -> {
             throw new RuntimeException("error1");
-        }), throwable -> Try.apply(() -> throwable.getMessage().length() + 1000L));
-        Try<Long> longTry4 = failingTry.transform(integer -> Try.apply(() -> integer + 1000L), throwable -> Try.apply(() -> {
+        }), exception -> Try.apply(() -> exception.getMessage().length() + 1000L));
+        Try<Long> longTry4 = failingTry.transform(integer -> Try.apply(() -> integer + 1000L), exception -> Try.apply(() -> {
             throw new RuntimeException("error2");
         }));
         Assert.assertTrue(longTry1.isSuccess() && longTry1.get() == 1001L);
@@ -150,4 +153,47 @@ public class TryTest {
         Assert.assertTrue(longTry3.isFailure() && "error1".equals(longTry3.failed().get().getMessage()));
         Assert.assertTrue(longTry4.isFailure() && "error2".equals(longTry4.failed().get().getMessage()));
     }
+
+    @Test
+    public void testAsRuntimeFailure() {
+        Try<Integer> integerTry1 = new Failure<>(new Exception("An Exception"));
+        Try<Integer> integerTry2 = new Failure<>(new RuntimeException("An RuntimeException"));
+        Try<Integer> integerTry3 = new Failure<>(new NoSuchElementException("An NoSuchElementException"));
+        Try<Integer> integerTry4 = new Success<>(1);
+        Assert.assertTrue(integerTry1.asRuntimeFailure().isFailure());
+        Assert.assertTrue(integerTry2.asRuntimeFailure().isSuccess());
+        try {
+            throw integerTry2.asRuntimeFailure().get();
+        } catch (Exception e) {
+            Assert.assertEquals("An RuntimeException", e.getMessage());
+        }
+        try {
+            throw integerTry3.asRuntimeFailure().get();
+        } catch (Exception e) {
+            Assert.assertEquals("An NoSuchElementException", e.getMessage());
+        }
+        Assert.assertTrue(integerTry3.asRuntimeFailure().isSuccess());
+        Assert.assertTrue(integerTry4.asRuntimeFailure().isFailure());
+    }
+
+    @Test
+    public void testAdept() {
+        Try<Integer> integerTry1 = new Failure<>(new RuntimeException("An RuntimeException in Integer type"));
+        Try<Integer> integerTry2 = new Success<>(42);
+        Try<String> stringTry1 = new Failure<>(new RuntimeException("An RuntimeException in String type"));
+        Try<String> stringTry2 = new Success<>("Hello");
+        Try<Double> doubleTry1 = integerTry1.adapt();
+        Try<Double> doubleTry2 = integerTry2.adapt();
+        Try<Double> doubleTry3 = stringTry1.adapt();
+        Try<Double> doubleTry4 = stringTry2.adapt();
+        Assert.assertTrue(doubleTry1.isFailure());
+        Assert.assertEquals("An RuntimeException in Integer type", doubleTry1.asRuntimeFailure().get().getMessage());
+        Assert.assertTrue(doubleTry2.isFailure());
+        Assert.assertEquals("This object isn't instance of Failure", doubleTry2.asRuntimeFailure().get().getMessage());
+        Assert.assertTrue(doubleTry3.isFailure());
+        Assert.assertEquals("An RuntimeException in String type", doubleTry3.asRuntimeFailure().get().getMessage());
+        Assert.assertTrue(doubleTry4.isFailure());
+        Assert.assertEquals("This object isn't instance of Failure", doubleTry4.asRuntimeFailure().get().getMessage());
+    }
+
 }
