@@ -5,9 +5,15 @@ package cc.domovoi.collection.util;
  */
 public final class Failure<T> extends Try<T> {
 
-    public Failure(Throwable exception) {
+    public Failure(Exception exception) {
         super();
         this._exception = exception;
+        this._value = null;
+    }
+
+    public Failure(String message) {
+        super();
+        this._exception = new RuntimeException(message);
         this._value = null;
     }
 

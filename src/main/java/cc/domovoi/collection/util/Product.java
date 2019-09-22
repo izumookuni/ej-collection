@@ -3,6 +3,7 @@ package cc.domovoi.collection.util;
 /**
  * Base class for all tuples.
  */
+@Deprecated
 public abstract class Product implements ProductLike {
 
     @Override

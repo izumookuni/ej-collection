@@ -11,14 +11,18 @@ public interface ProductLike {
      * The size of this product.
      * @return for a product `A(x,,1,,, ..., x,,k,,)`, returns `k`
      */
-    Integer productArity();
+    default Integer productArity() {
+        return productCollection().size();
+    }
 
     /**
      * The n^th^ element of this product, 0-based.
      * @param n the index of the element to return
      * @return the element `n` elements after the first element
      */
-    Object productElement(Integer n);
+    default Object productElement(Integer n) {
+        return productCollection().get(n);
+    }
 
     /**
      * An list over all the elements of this product.

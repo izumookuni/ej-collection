@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
  * If the promise has already been fulfilled, failed or has timed out,
  * calling this method will throw an IllegalStateException.
  * <p>
- * If the throwable used to fail this promise is an error, a control exception
+ * If the exception used to fail this promise is an error, a control exception
  * or an interrupted exception, it will be wrapped as a cause within an
  * `ExecutionException` which will fail the promise.
  * <p>
@@ -55,10 +55,10 @@ public class Promise<T> {
     /**
      * Completes the promise with an exception.
      *
-     * @param cause The throwable to complete the promise with.
+     * @param cause The exception to complete the promise with.
      * @return This promise
      */
-    public Promise<T> failure(Throwable cause) {
+    public Promise<T> failure(Exception cause) {
         return complete(new Failure<>(cause));
     }
 
@@ -134,10 +134,10 @@ public class Promise<T> {
     /**
      * Tries to complete the promise with an exception.
      *
-     * @param cause The throwable to complete the promise with.
+     * @param cause The exception to complete the promise with.
      * @return If the promise has already been completed returns `false`, or `true` otherwise.
      */
-    public Boolean tryFailure(Throwable cause) {
+    public Boolean tryFailure(Exception cause) {
         return tryComplete(new Failure<>(cause));
     }
 
@@ -164,12 +164,12 @@ public class Promise<T> {
     /**
      * Creates an already completed Promise with the specified exception.
      *
-     * @param throwable The throwable to complete the promise with.
+     * @param e The exception to complete the promise with.
      * @param <T1>      the type of the value in the promise
      * @return the newly created `Promise` object
      */
-    public static <T1> Promise<T1> failed(Throwable throwable) {
-        return new Promise<T1>().failure(throwable);
+    public static <T1> Promise<T1> failed(Exception e) {
+        return new Promise<T1>().failure(e);
     }
 
     /**

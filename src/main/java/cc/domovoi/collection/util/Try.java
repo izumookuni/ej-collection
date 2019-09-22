@@ -15,11 +15,11 @@ import java.util.function.Supplier;
  *
  * @param <T> Element type of this Try
  */
-public abstract class Try<T> extends Product implements Serializable {
+public abstract class Try<T> implements ProductLike, Serializable {
 
     protected T _value;
 
-    protected Throwable _exception;
+    protected Exception _exception;
 
     /**
      * Returns `true` if the `Try` is a `Failure`, `false` otherwise.
@@ -47,23 +47,23 @@ public abstract class Try<T> extends Product implements Serializable {
     public static <T1> Try<T1> apply(Supplier<T1> supplier) {
         try {
             return new Success<>(supplier.get());
-        } catch (Throwable failure) {
+        } catch (Exception failure) {
             return new Failure<>(failure);
         }
     }
 
     /**
      * Inverts this `Try`. If this is a `Failure`, returns its exception wrapped in a `Success`.
-     * If this is a `Success`, returns a `Failure` containing an `UnsupportedOperationException`.
+     * If this is a `Success`, returns a `Failure` containing an `ClassCastException`.
      *
      * @return If this is a `Failure`, returns its exception wrapped in a `Success`;
-     * If this is a `Success`, returns a `Failure` containing an `UnsupportedOperationException`.
+     * If this is a `Success`, returns a `Failure` containing an `ClassCastException`.
      */
-    public Try<Throwable> failed() {
+    public Try<Exception> failed() {
         if (isFailure()) {
             return new Success<>(this._exception);
         } else {
-            return new Failure<>(new NoSuchElementException("This object isn't instance of Failure"));
+            return new Failure<>(new ClassCastException("This object isn't instance of Failure"));
         }
     }
 
@@ -75,7 +75,7 @@ public abstract class Try<T> extends Product implements Serializable {
      */
     public Try<T> filter(Predicate<? super T> p) {
         if (isSuccess() && !p.test(this._value)) {
-            return new Failure<>(new AssertionError("Predicate Failure"));
+            return new Failure<>(new ClassCastException("Predicate Failure"));
         } else {
             return this;
         }
@@ -118,7 +118,7 @@ public abstract class Try<T> extends Product implements Serializable {
      * @param <U> the result type of applying the function
      * @return the results of applying the function
      */
-    public <U> U fold(Function<? super Throwable, ? extends U> fa, Function<? super T, ? extends U> fb) {
+    public <U> U fold(Function<? super Exception, ? extends U> fa, Function<? super T, ? extends U> fb) {
         if (isSuccess()) {
             return fb.apply(this._value);
         } else {
@@ -148,7 +148,7 @@ public abstract class Try<T> extends Product implements Serializable {
         if (isSuccess()) {
             return this._value;
         } else {
-            throw new NoSuchElementException("This object isn't instance of Success");
+            throw new ClassCastException("This object isn't instance of Success");
         }
     }
 
@@ -213,7 +213,7 @@ public abstract class Try<T> extends Product implements Serializable {
      * @param f the given recover function
      * @return Returns this if this is a `Success`, or a new `Try` instance applies the given function `f`.
      */
-    public Try<T> recover(Function<? super Throwable, ? extends T> f) {
+    public Try<T> recover(Function<? super Exception, ? extends T> f) {
         if (isFailure()) {
             return Try.apply(() -> f.apply(this._exception));
         } else {
@@ -228,7 +228,7 @@ public abstract class Try<T> extends Product implements Serializable {
      * @param f the given recover function
      * @return Returns this if this is a `Success`, or a new `Try` instance applies the given function `f`.
      */
-    public Try<T> recoverWith(Function<? super Throwable, ? extends Try<T>> f) {
+    public Try<T> recoverWith(Function<? super Exception, ? extends Try<T>> f) {
         if (isFailure()) {
             return f.apply(this._exception);
         } else {
@@ -237,11 +237,11 @@ public abstract class Try<T> extends Product implements Serializable {
     }
 
     /**
-     * Returns `Left` with `Throwable` if this is a `Failure`, otherwise returns `Right` with `Success` value.
+     * Returns `Left` with `Exception` if this is a `Failure`, otherwise returns `Right` with `Success` value.
      *
-     * @return Returns `Left` with `Throwable` if this is a `Failure`, otherwise returns `Right` with `Success` value.
+     * @return Returns `Left` with `Exception` if this is a `Failure`, otherwise returns `Right` with `Success` value.
      */
-    public Either<Throwable, T> toEither() {
+    public Either<Exception, T> toEither() {
         if (isSuccess()) {
             return new Right<>(this._value);
         } else {
@@ -265,8 +265,7 @@ public abstract class Try<T> extends Product implements Serializable {
     public Option<T> toOption() {
         if (isSuccess()) {
             return Some.apply(this._value);
-        }
-        else {
+        } else {
             return None.unit();
         }
     }
@@ -280,11 +279,41 @@ public abstract class Try<T> extends Product implements Serializable {
      * @param <U> the result type of applying the function
      * @return the results of applying the function
      */
-    public <U> Try<U> transform(Function<? super T, ? extends Try<U>> s, Function<? super Throwable, ? extends Try<U>> f) {
+    public <U> Try<U> transform(Function<? super T, ? extends Try<U>> s, Function<? super Exception, ? extends Try<U>> f) {
         if (isSuccess()) {
             return s.apply(this._value);
         } else {
             return f.apply(this._exception);
+        }
+    }
+
+    /**
+     * Treat `_exception` as an `RuntimeException` instance. A `Failure` will be return if `_exception` is not an `RuntimeException` instance.
+     *
+     * @return If this is a `Failure` with `RuntimeException` type, returns its exception wrapped in a `Success`;
+     * If not, returns a `Failure` containing an `ClassCastException`.
+     */
+    public Try<RuntimeException> asRuntimeFailure() {
+        if (isSuccess()) {
+            return new Failure<>(new ClassCastException("This object isn't instance of Failure"));
+        } else if (this._exception instanceof RuntimeException) {
+            return new Success<>((RuntimeException) this._exception);
+        } else {
+            return new Failure<>(new ClassCastException("This object isn't instance of RuntimeException"));
+        }
+    }
+
+    /**
+     * An easy function to let a `Try` in type T adapt to another type U. A `Failure` will be return if this is not an `Failure` instance.
+     *
+     * @param <U> another type
+     * @return A new `Try` in type U. A `Failure` will be return if this is not an `Failure` instance.
+     */
+    public <U> Try<U> adapt() {
+        if (isSuccess()) {
+            return new Failure<>(new ClassCastException("This object isn't instance of Failure"));
+        } else {
+            return new Failure<>(this._exception);
         }
     }
 

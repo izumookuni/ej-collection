@@ -14,7 +14,7 @@ import java.util.function.Supplier;
  * @param <L> Left type of this Either instance
  * @param <R> Right type of this Either instance
  */
-public abstract class Either<L, R> extends Product implements Serializable {
+public abstract class Either<L, R> implements ProductLike, Serializable {
 
     protected L _left;
 

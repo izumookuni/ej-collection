@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public abstract class Option<T> extends Product implements Serializable {
+public abstract class Option<T> implements ProductLike, Serializable {
 
     protected final T _value;
 

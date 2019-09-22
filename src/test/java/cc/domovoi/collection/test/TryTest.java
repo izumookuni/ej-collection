@@ -121,8 +121,8 @@ public class TryTest {
 
     @Test
     public void testToEither() {
-        Either<Throwable, Integer> either1 = successfulTry.toEither();
-        Either<Throwable, Integer> either2 = failingTry.toEither();
+        Either<Exception, Integer> either1 = successfulTry.toEither();
+        Either<Exception, Integer> either2 = failingTry.toEither();
         Assert.assertTrue(either1.isRight() && either1.right().get() == 1);
         Assert.assertTrue(either2.isLeft() && "/ by zero".equals(either2.left().get().getMessage()));
     }
