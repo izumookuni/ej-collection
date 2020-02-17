@@ -44,7 +44,7 @@ public abstract class Try<T> extends Product implements Serializable {
      * @param <T1>     element type of this Try
      * @return a Try instance
      */
-    public static <T1> Try<T1> apply(Supplier<T1> supplier) {
+    public static <T1> Try<T1> apply(FailureSupplier<T1> supplier) {
         try {
             return new Success<>(supplier.get());
         } catch (Exception failure) {

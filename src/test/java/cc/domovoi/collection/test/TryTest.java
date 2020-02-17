@@ -196,4 +196,12 @@ public class TryTest {
         Assert.assertEquals("This object isn't instance of Failure", doubleTry4.asRuntimeFailure().get().getMessage());
     }
 
+    @Test
+    public void testTryApply() {
+        Try<Integer> integerTry = Try.apply(() -> {
+            throw new Exception("An Exception");
+        });
+        Assert.assertTrue(integerTry.isFailure());
+    }
+
 }
